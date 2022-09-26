@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: rspm-core-service
+  cloud:
+    discovery:
+      enabled: true
+eureka:
+  instance:
+    prefer-ip-address: true
+server:
+  port: 8081
