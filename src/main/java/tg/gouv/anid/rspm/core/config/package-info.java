@@ -1,0 +1,1 @@
+package tg.gouv.anid.rspm.core.config;

@@ -1,12 +1,44 @@
 spring:
   application:
     name: rspm-core-service
+    basedir: ${user.home}/.${spring.application.name}
   cloud:
     discovery:
       enabled: true
     config:
       uri: http://localhost:8888
       enabled: false
+  datasource:
+    database: rspm_core_db
+    hostname: localhost
+    port: 5432
+    username: francis #francis
+    password: Anid2022 #Anid2022
+    url: jdbc:postgresql://${spring.datasource.hostname}:${spring.datasource.port}/${spring.datasource.database}?useSSL=false&serverTimezone=UTC&useLegacyDatetime=false
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-test-query: "SELECT 1"
+      max-lifetime: 1800000
+      idle-timeout: 600000
+      leak-detection-threshold: 60000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database: postgresql
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  main:
+    allow-circular-references: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   sleuth:
     otel:
       config:
@@ -14,12 +46,37 @@ spring:
       exporter:
         otlp:
           endpoint: http://otel-collector:4317
+  sql:
+    init:
+      mode: always
 eureka:
   instance:
     prefer-ip-address: true
+
+#Server config
 server:
   port: 8081
-
+  tomcat:
+    remoteip:
+      remote-ip-header: "x-forwarded-for"
+      protocol-header: "x-forwarded-proto"
+      internal-proxies:
+    basedir: ${spring.application.basedir}/tomcat
+    #Tomcat log
+    accesslog:
+      enabled: true
+      directory: "logs"
+      buffered: false
+      suffix: .json
+      rotate: true
+      max-days: 3
+      rename-on-rotate: true
+      pattern: '{"clientIp":"%h","user":"%l","username":"%u","time":"%{yyyy-MM-dd''T''HH:mm:ss.SSS''Z''}t","urlPath":"%U","duration":"%D","method":"%m","request":"%r","status":"%s","responseSize":"%b","trace":"%{X-B3-TraceId}i","span":"%{X-B3-SpanId}i"}'
+#Logs application level
+logging:
+  config: 'classpath:logback-spring.xml'
+  file:
+    path: ${spring.application.basedir}/logs
 
 #springdoc:
 #  swagger-ui:
