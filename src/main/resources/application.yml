@@ -4,8 +4,31 @@ spring:
   cloud:
     discovery:
       enabled: true
+    config:
+      uri: http://localhost:8888
+      enabled: false
+  sleuth:
+    otel:
+      config:
+        trace-id-ratio-based: 1.0
+      exporter:
+        otlp:
+          endpoint: http://otel-collector:4317
 eureka:
   instance:
     prefer-ip-address: true
 server:
   port: 8081
+
+
+#springdoc:
+#  swagger-ui:
+#    path: /apidoc
+#    displayRequestDuration: true
+#    disable-swagger-default-url: true
+#    csrf:
+#      enabled: true
+#    operationsSorter: method #For sorting endpoints by http methods
+#    tagsSorter: alpha #For sorting tags alphabetically
+#  api-docs:
+#    path: /api
