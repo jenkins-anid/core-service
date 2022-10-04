@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class HouseholdRespDto {
+    private Long id;
     private String hin;
     private String name;
     private ResidentRespDto head;

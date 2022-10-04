@@ -23,9 +23,11 @@ spring:
       leak-detection-threshold: 60000
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        #org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     database: postgresql
     properties:
@@ -51,7 +53,11 @@ spring:
       mode: always
 eureka:
   instance:
-    prefer-ip-address: true
+    #hostname: 10.40.40.240
+    preferIpAddress: true
+  client:
+    serviceURL:
+      defaultZone: http://10.2.33.236:8761/eureka
 
 #Server config
 server:

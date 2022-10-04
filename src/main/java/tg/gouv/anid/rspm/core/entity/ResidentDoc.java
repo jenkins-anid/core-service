@@ -32,7 +32,7 @@ public class ResidentDoc extends Auditable<String> {
     @Column(name = "R_DOC_DESCRIPTION")
     private String description;
     @NotNull(message = "residentDoc.object.mandatory")
-    @Column(name = "R_DOC_DESCRIPTION")
+    @Column(name = "R_DOC_OBJECT")
     private byte[] object;
 
 }

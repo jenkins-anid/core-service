@@ -5,10 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import tg.gouv.anid.common.entities.entity.Auditable;
+import tg.gouv.anid.common.entities.enums.MaritalStatus;
 import tg.gouv.anid.rspm.core.model.Profession;
 import tg.gouv.anid.rspm.core.model.SchoolLevel;
+import tg.gouv.anid.rspm.core.util.DateUtil;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -30,32 +34,44 @@ public class Resident extends Auditable<String> {
     @GeneratedValue
     @Column(name = "RES_ID")
     private Long id;
-    @Column(name = "RES_UIN")
+    @NotBlank(message = "resident.uin.mandatory")
+    @Column(name = "RES_UIN", unique = true, length = 12, updatable = false)
     private String uin;
-    @Column(name = "RES_NAME")
+    @NotBlank(message = "resident.name.mandatory")
+    @Column(name = "RES_NAME", updatable = false)
     private String name;
-    @Column(name = "RES_SURNAME")
+    @NotBlank(message = "resident.surname.mandatory")
+    @Column(name = "RES_SURNAME", updatable = false)
     private String surname;
+    @NotNull(message = "resident.isHead.mandatory")
     @Column(name = "RES_IS_HEAD_YN")
     private boolean isHead;
+    @NotBlank(message = "resident.civility.mandatory")
     @Column(name = "RES_TITLE")
     private String civility;
-    @Column(name = "RES_SEX")
+    @NotBlank(message = "resident.sex.mandatory")
+    @Column(name = "RES_SEX", updatable = false)
     private String sex;
+    @NotBlank(message = "resident.nationality.mandatory")
     @Column(name = "RES_NATIONALITY")
     private String nationality;
+    @NotNull(message = "resident.docType.mandatory")
     @Column(name = "RES_NAT_DOC_TYPE")
     private Long nationalityDocType;
     @Column(name = "RES_NAT_DOC")
     private byte[] nationalityDoc;
+    @NotBlank(message = "resident.countryCode.mandatory")
     @Column(name = "RES_COUNTRY_DOC")
     private String countryCode;
-    @Column(name = "RES_BIRTH_DATE")
+    @NotNull(message = "resident.birthdate.mandatory")
+    @Column(name = "RES_BIRTH_DATE", updatable = false)
     private LocalDate birthDate;
     @Column(name = "RES_AGE")
     private int age;
+    @NotNull(message = "resident.maritalStatus.mandatory")
     @Column(name = "RES_MARITAL_STATUS")
-    private String maritalStatus;
+    @Enumerated(EnumType.STRING)
+    private MaritalStatus maritalStatus;
     @Column(name = "RES_PROFESSION")
     private Long professionId;
     @Transient
@@ -69,11 +85,12 @@ public class Resident extends Auditable<String> {
     @Transient
     private SchoolLevel schoolLevel;
     @Column(name = "RES_FINISH_SCHOOL_YR")
-    private int finishSchoolYear;
+    private Integer finishSchoolYear;
     @Column(name = "RES_ATSCHOOL_NOW_YR")
     private boolean atSchoolNow;
     @Column(name = "RES_ACTUAL_SCHOOL")
     private String actualSchool;
+    @NotBlank(message = "resident.birthCountry.mandatory")
     @Column(name = "RES_COUNTRY_OFBIRTH")
     private String birthCountry;
     @Column(name = "RES_MIGRATED_YN")
@@ -81,7 +98,7 @@ public class Resident extends Auditable<String> {
     @Column(name = "RES_MIGRATION_COUNTRY")
     private String migrationCountry;
     @Column(name = "RES_RETURN_YR")
-    private int returnYear;
+    private Integer returnYear;
     @Column(name = "RES_REGION")
     private String region;
     @Column(name = "RES_ADD_PREFECTURE")
@@ -98,6 +115,7 @@ public class Resident extends Auditable<String> {
     private String phone;
     @Column(name = "RES_EMAIL")
     private String email;
+    @NotBlank(message = "resident.relationHousehold.mandatory")
     @Column(name = "RES_RELATION_HH")
     private String relationHousehold;
     @Column(name = "RES_SCORE")
@@ -111,4 +129,11 @@ public class Resident extends Auditable<String> {
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
     private Set<ResidentDoc> residentDocs;
 
+    @PrePersist
+    @Override
+    public void setUp() {
+        super.setUp();
+        this.age = DateUtil.calculateAge(this.birthDate);
+
+    }
 }

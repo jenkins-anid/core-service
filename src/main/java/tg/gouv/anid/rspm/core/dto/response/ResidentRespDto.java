@@ -20,7 +20,7 @@ public class ResidentRespDto {
     private String sex;
     private String nationality;
     private Long nationalityDocType;
-    private String nationalityDoc;
+    private byte[] nationalityDoc;
     private String countryCode;
     private LocalDate birthDate;
     private int age;

@@ -9,6 +9,7 @@ import tg.gouv.anid.common.entities.entity.Auditable;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ public class Household extends Auditable<String> {
     @Column(name = "HH_ID")
     private Long id;
     @NotBlank(message = "household.hin.mandatory")
-    @Column(name = "HH_HIN", nullable = false)
+    @Column(name = "HH_HIN", nullable = false, unique = true, updatable = false)
     private String hin;
     @NotBlank(message = "household.name.mandatory")
     @Column(name = "HH_NAME")
@@ -38,30 +39,24 @@ public class Household extends Auditable<String> {
     @NotNull(message = "household.headId.mandatory")
     @Column(name = "HH_HEAD_ID")
     private Long headId;
-    @NotNull(message = "household.interviewMonth.mandatory")
     @Column(name = "HH_INT_MONTH")
-    private int interviewMonth;
-    @NotNull(message = "household.interviewYear.mandatory")
+    private Integer interviewMonth;
     @Column(name = "HH_INT_YR")
-    private int interviewYear;
+    private Integer interviewYear;
     @NotNull(message = "household.size.mandatory")
     @Column(name = "HH_SIZE")
     private int size;
-    @NotNull(message = "household.weight.mandatory")
     @Column(name = "HH_WEIGHT")
-    private double weight;
-    @NotNull(message = "household.adultCount.mandatory")
+    private Double weight;
     @Column(name = "HH_NB_ADULT")
-    private int adultCount;
-    @NotNull(message = "household.residentCount.mandatory")
+    private Integer adultCount;
     @Column(name = "HH_NB_RES")
-    private int residentCount;
+    private Integer residentCount;
     @NotBlank(message = "household.status.mandatory")
     @Column(name = "HH_STATUS")
     private String status;
-    @NotNull(message = "household.isHomeOwner.mandatory")
     @Column(name = "HH_HOME_OWNER_YN")
-    private boolean isHomeOwner;
+    private Boolean isHomeOwner;
     @Column(name = "HH_H_OCCUP_STATUS")
     private String homeOccupationStatus;
     @Column(name = "HH_DIST_HEALTH")
@@ -78,5 +73,23 @@ public class Household extends Auditable<String> {
     private Set<HouseholdConsommation> consommations;
     @OneToOne(mappedBy = "household")
     private Score score;
+
+    public Optional<HouseholdAssetsUtil> getAssetsUtil() {
+        return this.assetsUtils.stream().findFirst();
+    }
+
+    public Optional<HouseholdAssetsDurable> getAssetsDurable() {
+        return this.assetsDurables.stream().findFirst();
+    }
+
+    public Optional<HouseholdAssetsRemitance> getAssetsRemittance() {
+        return this.assetsRemitances.stream().findFirst();
+    }
+
+    public Optional<HouseholdConsommation> getConsommation() {
+        return this.consommations.stream().findFirst();
+    }
+
+
 
 }
