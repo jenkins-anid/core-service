@@ -11,6 +11,7 @@ import tg.gouv.anid.rspm.core.entity.Resident;
 public interface ResidentMapper {
 
     @Mapping( target = "nationalityDoc", expression = "java(convertToByteArray(dto.getNationalityDoc()))")
+    @Mapping(source = "householdId", target = "household")
     Resident toResident(ResidentReqDto dto);
 
     ResidentRespDto toResidentRespDto(Resident resident);

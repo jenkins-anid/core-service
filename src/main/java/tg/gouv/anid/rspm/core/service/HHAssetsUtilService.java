@@ -22,7 +22,7 @@ public class HHAssetsUtilService extends GenericService<HouseholdAssetsUtil, Lon
 
     private final AssetsUtilMapper assetsUtilMapper;
 
-    protected HHAssetsUtilService(HHAssetsUtilRepository repository,
+    public HHAssetsUtilService(HHAssetsUtilRepository repository,
                                   AssetsUtilMapper assetsUtilMapper) {
         super(repository);
         this.assetsUtilMapper = assetsUtilMapper;

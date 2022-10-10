@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import tg.gouv.anid.common.entities.entity.Auditable;
 import tg.gouv.anid.common.entities.enums.MaritalStatus;
+import tg.gouv.anid.rspm.core.enums.ResidentStatus;
 import tg.gouv.anid.rspm.core.model.Profession;
 import tg.gouv.anid.rspm.core.model.SchoolLevel;
 import tg.gouv.anid.rspm.core.util.DateUtil;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -34,6 +36,9 @@ public class Resident extends Auditable<String> {
     @GeneratedValue
     @Column(name = "RES_ID")
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "HH_ID")
+    private Household household;
     @NotBlank(message = "resident.uin.mandatory")
     @Column(name = "RES_UIN", unique = true, length = 12, updatable = false)
     private String uin;
@@ -119,11 +124,14 @@ public class Resident extends Auditable<String> {
     @Column(name = "RES_RELATION_HH")
     private String relationHousehold;
     @Column(name = "RES_SCORE")
-    private int score;
+    private Integer score;
     @Column(name = "RES_DIST_SCHOOL")
     private Double distanceSchool;
     @Column(name = "RES_TTAKEN_SCHOOL")
-    private int timeTakenSchool;
+    private Integer timeTakenSchool;
+    @Column(name = "RES_STATUS")
+    @Enumerated(EnumType.STRING)
+    private ResidentStatus status;
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
     private Set<HouseholdHistoric> historics;
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
@@ -134,6 +142,37 @@ public class Resident extends Auditable<String> {
     public void setUp() {
         super.setUp();
         this.age = DateUtil.calculateAge(this.birthDate);
+        statusCheck();
+    }
 
+    public void statusCheck() {
+        if (Objects.isNull(status)) {
+            this.status = ResidentStatus.CREATE;
+        }else if (!ResidentStatus.BANNED.equals(status)
+                &&  isHouseholdNonNull()) {
+            this.status = ResidentStatus.IN_HOUSEHOLD;
+        }
+    }
+
+    public boolean isHouseholdNonNull() {
+        return Objects.nonNull(household) && Objects.nonNull(household.getId());
+    }
+
+    public boolean validateUnchangeableInfo(Resident old) {
+        if (id.equals(old.getId())
+                && uin.equals(old.getUin())
+                && name.equals(old.getName())
+                && surname.equals(old.getSurname())
+                && household.getId().equals(old.getHousehold().getId())
+                && sex.equals(old.getSex())
+                && birthDate.equals(old.getBirthDate())
+                && status.equals(old.getStatus())) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    public Long getHouseholdId() {
+        return Objects.nonNull(household) ? household.getId() : null;
     }
 }

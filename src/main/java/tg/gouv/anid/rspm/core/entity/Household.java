@@ -39,6 +39,8 @@ public class Household extends Auditable<String> {
     @NotNull(message = "household.headId.mandatory")
     @Column(name = "HH_HEAD_ID")
     private Long headId;
+    @Transient
+    private String headUin;
     @Column(name = "HH_INT_MONTH")
     private Integer interviewMonth;
     @Column(name = "HH_INT_YR")
@@ -63,6 +65,8 @@ public class Household extends Auditable<String> {
     private Double healthCenterDistance;
     @Column(name = "HH_TTAKEN_HEALTH")
     private int timeTakenToHealthCenter;
+    @Column(name = "HH_DESIGNATED_ID")
+    private String designatedUIN;
     @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
     private Set<HouseholdAssetsUtil> assetsUtils;
     @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
@@ -73,6 +77,10 @@ public class Household extends Auditable<String> {
     private Set<HouseholdConsommation> consommations;
     @OneToOne(mappedBy = "household")
     private Score score;
+
+    public Household(Long id) {
+        this.id = id;
+    }
 
     public Optional<HouseholdAssetsUtil> getAssetsUtil() {
         return this.assetsUtils.stream().findFirst();
@@ -91,5 +99,15 @@ public class Household extends Auditable<String> {
     }
 
 
+    public boolean validateUnchanheableField(Household old) {
+        if (hin.equals(old.hin)
+                && headId.equals(old.headId)
+                && status.equals(old.status)
+                && designatedUIN.equals(old.designatedUIN)) {
+            return Boolean.TRUE;
+        }
+
+        return Boolean.FALSE;
+    }
 
 }

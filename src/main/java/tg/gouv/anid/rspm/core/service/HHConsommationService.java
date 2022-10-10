@@ -22,7 +22,7 @@ public class HHConsommationService extends GenericService<HouseholdConsommation,
 
     private final ConsommationMapper consommationMapper;
 
-    protected HHConsommationService(HHConsommationRepository repository,
+    public HHConsommationService(HHConsommationRepository repository,
                                     ConsommationMapper consommationMapper) {
         super(repository);
         this.consommationMapper = consommationMapper;

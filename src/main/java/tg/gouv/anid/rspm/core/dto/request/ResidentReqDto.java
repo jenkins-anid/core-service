@@ -1,13 +1,17 @@
 package tg.gouv.anid.rspm.core.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 import tg.gouv.anid.common.entities.enums.MaritalStatus;
+import tg.gouv.anid.common.entities.exception.ApplicationException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * @author Francis AHONSU
@@ -17,12 +21,16 @@ import java.time.LocalDate;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResidentReqDto {
+    @JsonIgnore
+    private Long id;
     @NotBlank(message = "resident.name.mandatory")
     private String name;
     @NotBlank(message = "resident.surname.mandatory")
     private String surname;
     @NotNull(message = "resident.isHead.mandatory")
     private boolean isHead;
+
+    private Long householdId;
     @NotBlank(message = "resident.uin.mandatory")
     private String uin;
     @NotBlank(message = "resident.civility.mandatory")
@@ -71,4 +79,9 @@ public class ResidentReqDto {
     private String relationHousehold;
     private Double distanceSchool;
     private int timeTakenSchool;
+
+    public void householdIdMandatoryControl() {
+        if (Objects.nonNull(householdId))
+            throw new ApplicationException("household.id.mandatory");
+    }
 }

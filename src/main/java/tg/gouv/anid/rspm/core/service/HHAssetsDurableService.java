@@ -26,7 +26,7 @@ import java.util.Objects;
 public class HHAssetsDurableService extends GenericService<HouseholdAssetsDurable, Long> {
 
     private final AssetsDurableMapper assetsDurableMapper;
-    protected HHAssetsDurableService(HHAssetsDurableRepository repository,
+    public HHAssetsDurableService(HHAssetsDurableRepository repository,
                                      AssetsDurableMapper assetsDurableMapper) {
         super(repository);
         this.assetsDurableMapper = assetsDurableMapper;

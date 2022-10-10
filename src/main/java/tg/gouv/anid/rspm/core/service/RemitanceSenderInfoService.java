@@ -13,7 +13,7 @@ import tg.gouv.anid.rspm.core.repository.RemitanceSenderInfoRepository;
 @Transactional(readOnly = true)
 public class RemitanceSenderInfoService extends GenericService<RemitanceSenderInfo, Long> {
 
-    protected RemitanceSenderInfoService(RemitanceSenderInfoRepository repository) {
+    public RemitanceSenderInfoService(RemitanceSenderInfoRepository repository) {
         super(repository);
     }
 }

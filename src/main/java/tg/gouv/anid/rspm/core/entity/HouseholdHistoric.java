@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import tg.gouv.anid.common.entities.entity.Auditable;
+import tg.gouv.anid.rspm.core.dto.response.HouseholdRespDto;
+import tg.gouv.anid.rspm.core.enums.HistoricStatus;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -36,9 +38,26 @@ public class HouseholdHistoric extends Auditable<String> {
     @Column(name = "RES_UIN")
     private String uin;
     @Column(name = "HIST_STATUS")
-    private String historicStatus;
+    @Enumerated(EnumType.STRING)
+    private HistoricStatus historicStatus;
     @Column(name = "HH_NIM")
     private String hin;
     @Column(name = "HIST_DATE")
     private LocalDate historicDate;
+
+    public HouseholdHistoric(Resident resident, HouseholdRespDto household, HistoricStatus historicStatus) {
+        this.resident = resident;
+        this.household.setId(household.getId());
+        this.historicDate = LocalDate.now();
+        this.hin = household.getHin();
+        this.historicStatus = historicStatus;
+    }
+
+    public HouseholdHistoric(Resident resident, Household household, HistoricStatus historicStatus) {
+        this.resident = resident;
+        this.household.setId(household.getId());
+        this.historicDate = LocalDate.now();
+        this.hin = household.getHin();
+        this.historicStatus = historicStatus;
+    }
 }

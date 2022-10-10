@@ -16,7 +16,7 @@ public class ResidentDocService extends GenericService<ResidentDoc, Long> {
 
     private final ResidentDocMapper residentDocMapper;
 
-    protected ResidentDocService(ResidentDocRepository repository, ResidentDocMapper residentDocMapper) {
+    public ResidentDocService(ResidentDocRepository repository, ResidentDocMapper residentDocMapper) {
         super(repository);
         this.residentDocMapper = residentDocMapper;
     }

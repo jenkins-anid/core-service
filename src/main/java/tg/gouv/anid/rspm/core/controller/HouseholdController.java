@@ -11,6 +11,7 @@ import tg.gouv.anid.rspm.core.dto.request.*;
 import tg.gouv.anid.rspm.core.service.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Francis AHONSU
@@ -42,9 +43,50 @@ public class HouseholdController {
     @PostMapping
     @Operation(summary = "Créer un ménage",
             description = "Permet de créer un ménage dans le système")
-    public ResponseEntity<Response> create(@RequestBody HouseholdReqDto dto) {
+    public ResponseEntity<Response> create(@RequestBody @Valid HouseholdReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                         .successResponse(householdService.createHousehold(dto)));
+    }
+
+    @PutMapping(value = "{id}")
+    @Operation(summary = "Editer un ménage",
+            description = "Permet de Modifier les informations d'un ménage dans le système")
+    public ResponseEntity<Response> update(@PathVariable Long id, @RequestBody @Valid HouseholdReqDto dto) {
+        dto.setId(id);
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.updateHousehold(dto)));
+    }
+
+    @PutMapping(value = "{id}/designated-beneficiary")
+    @Operation(summary = "Changer le bénéficiaire désigné d'un ménage",
+            description = "Permet de désigner un bénéficiaire pour un ménage dans le système")
+    public ResponseEntity<Response> updateDesignatedBeneficiary(@PathVariable Long id, @RequestBody @NotNull String uin) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.updateDesignatedBeneficiary(uin, id)));
+    }
+
+    @PutMapping(value = "change-head")
+    @Operation(summary = "Changer le chef d'un ménage",
+            description = "Permet de changer le chef d'un ménage par un autre membre du ménage")
+    public ResponseEntity<Response> changeHouseholdHead(@RequestBody @Valid HouseholdHeadChangeDto dto) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.changeHouseholdHead(dto)));
+    }
+
+    @PutMapping(value = "transfer")
+    @Operation(summary = "Transférer les membres d'un ménage",
+            description = "Permet de transférer un ou plusieurs membre d'un ménage")
+    public ResponseEntity<Response> transferHouseholdMembers(@RequestBody @Valid TransferHouseholdMembersDto dto) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.transferHouseholdMember(dto)));
+    }
+
+    @PutMapping(value = "transfer/validate")
+    @Operation(summary = "Valider le transfert des membres d'un ménage",
+            description = "Permet de valider le transfert d'un ou de plusieurs membre d'un ménage")
+    public ResponseEntity<Response> validateHouseholdMembersTransfer(@RequestBody @Valid HouseholdTransferValidationDto dto) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.validateTransfer(dto)));
     }
 
     @PostMapping(value = "{householdId}/assets")
@@ -91,7 +133,7 @@ public class HouseholdController {
     @PostMapping(value = "consommation")
     @Operation(summary = "Ajouter la consommation du ménage",
             description = "Permet d'ajouter la consommation pour un ménage dans le système")
-    public ResponseEntity<Response> addConsommation(@RequestBody ConsommationReqDto dto) {
+    public ResponseEntity<Response> addConsommation(@RequestBody @Valid ConsommationReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(consommationService.addConsommation(dto)));
     }
@@ -107,7 +149,7 @@ public class HouseholdController {
     @PostMapping(value = "assets-util")
     @Operation(summary = "Ajouter un actif utilitaire à un ménage",
             description = "Permet d'ajouter un actif utilitaire pour un ménage dans le système")
-    public ResponseEntity<Response> addAssetsUtil(@RequestBody AssetsUtilReqDto dto) {
+    public ResponseEntity<Response> addAssetsUtil(@RequestBody @Valid AssetsUtilReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(assetsUtilService.addAssetsUtil(dto)));
     }
@@ -123,7 +165,7 @@ public class HouseholdController {
     @PostMapping(value = "assets-durable")
     @Operation(summary = "Ajouter un actif durable à un ménage",
             description = "Permet d'ajouter un actif durable pour un ménage dans le système")
-    public ResponseEntity<Response> addAssetsDurable(@RequestBody AssetsDurableReqDto dto) {
+    public ResponseEntity<Response> addAssetsDurable(@RequestBody @Valid AssetsDurableReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(assetsDurableService.addAssetsDurable(dto)));
     }
@@ -139,7 +181,7 @@ public class HouseholdController {
     @PostMapping(value = "assets-remittance")
     @Operation(summary = "Enrégistrer les transferts de fond d'un ménage",
             description = "Permet d'ajouter les transferts de fond pour un ménage dans le système")
-    public ResponseEntity<Response> addRemittance(@RequestBody AssetsRemitanceReqDto dto) {
+    public ResponseEntity<Response> addRemittance(@RequestBody @Valid AssetsRemitanceReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(assetsRemitanceService.addAssetsRemitance(dto)));
     }

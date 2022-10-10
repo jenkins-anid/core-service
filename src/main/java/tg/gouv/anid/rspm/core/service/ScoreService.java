@@ -13,7 +13,7 @@ import tg.gouv.anid.rspm.core.repository.ScoreRepository;
 @Transactional(readOnly = true)
 public class ScoreService extends GenericService<Score, Long> {
 
-    protected ScoreService(ScoreRepository repository) {
+    public ScoreService(ScoreRepository repository) {
         super(repository);
     }
 }

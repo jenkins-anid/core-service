@@ -6,6 +6,11 @@ import tg.gouv.anid.common.entities.exception.ApplicationException;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ * @author Francis AHONSU
+ *
+ * @since 0.0.1
+ */
 @Data
 public class HouseholdAssetsReqDto {
     private AssetsUtilReqDto assetsUtil;

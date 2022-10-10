@@ -2,6 +2,8 @@ package tg.gouv.anid.rspm.core.repository;
 
 import tg.gouv.anid.rspm.core.entity.Household;
 
+import java.util.Optional;
+
 /**
  * Classe repository pour la gestion des ménages
  *
@@ -10,4 +12,5 @@ import tg.gouv.anid.rspm.core.entity.Household;
  * @version 0.0.1
  */
 public interface HouseholdRepository extends BaseRepository<Household, Long, Long> {
+    Optional<Household> findByHin(String hin);
 }

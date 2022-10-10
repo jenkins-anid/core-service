@@ -26,7 +26,7 @@ import java.util.Objects;
 public class HHAssetsRemitanceService extends GenericService<HouseholdAssetsRemitance, Long> {
     private final AssetsRemitanceMapper assetsRemitanceMapper;
 
-    protected HHAssetsRemitanceService(HHAssetsRemitanceRepository repository,
+    public HHAssetsRemitanceService(HHAssetsRemitanceRepository repository,
                                        AssetsRemitanceMapper assetsRemitanceMapper) {
         super(repository);
         this.assetsRemitanceMapper = assetsRemitanceMapper;

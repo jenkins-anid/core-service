@@ -4,6 +4,11 @@ import lombok.Data;
 import tg.gouv.anid.rspm.core.entity.Household;
 
 
+/**
+ * @author Francis AHONSU
+ *
+ * @since 0.0.1
+ */
 @Data
 public class HouseholdAssetsRespDto {
     private Long id;

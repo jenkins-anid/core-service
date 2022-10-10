@@ -7,6 +7,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.annotation.Priority;
 
+/**
+ * @author Francis AHONSU
+ *
+ * @since 0.0.1
+ */
 @ControllerAdvice
 @Priority(1)
 @Order(Ordered.HIGHEST_PRECEDENCE)

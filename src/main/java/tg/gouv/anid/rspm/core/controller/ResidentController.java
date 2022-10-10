@@ -38,13 +38,21 @@ public class ResidentController {
     @PostMapping
     @Operation(summary = "Créer un résident",
             description = "Permet d'enrégistrer les informations d'un résident dans le système")
-    public ResponseEntity<Response> create(@RequestBody ResidentReqDto dto) {
+    public ResponseEntity<Response> create(@RequestBody @Valid ResidentReqDto dto) {
+        dto.householdIdMandatoryControl();
         return ResponseEntity.ok(Response
                 .builder()
                 .status(HttpStatus.OK)
                 .message("household.create.success")
                 .data(residentService.addResident(dto))
                 .build());
+    }
+    @PutMapping(value = "{id}")
+    @Operation(summary = "Editer un résident",
+            description = "Permet de modifier les informations d'un résident dans le système")
+    public ResponseEntity<Response> update(@PathVariable Long id,@RequestBody @Valid ResidentReqDto dto) {
+        dto.setId(id);
+        return ResponseEntity.ok(ResponseUtil.successResponse(residentService.updateHousehold(dto)));
     }
 
     @PostMapping(value = "household-head")
@@ -72,7 +80,7 @@ public class ResidentController {
     @PostMapping(value = "add-resident-doc")
     @Operation(summary = "Enrégistrer un document d'un résident",
             description = "Permet d'ajouter un document d'un résident")
-    public ResponseEntity<Response> addResidentDoc(@RequestBody ResidentDocReqDto dto) {
+    public ResponseEntity<Response> addResidentDoc(@RequestBody @Valid ResidentDocReqDto dto) {
         return ResponseEntity.ok(Response
                 .builder()
                         .status(HttpStatus.OK)
