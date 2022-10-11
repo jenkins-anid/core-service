@@ -19,14 +19,14 @@ public class HouseholdReqDto {
     @NotBlank(message = "household.name.mandatory")
     private String name;
     private Long headId;
-    private int interviewMonth;
-    private int interviewYear;
-    private int size;
-    private double weight;
-    private int adultCount;
-    private int residentCount;
+    private Integer interviewMonth;
+    private Integer interviewYear;
+    private Integer size;
+    private Double weight;
+    private Integer adultCount;
+    private Integer residentCount;
     private boolean isHomeOwner;
     private String homeOccupationStatus;
     private Double healthCenterDistance;
-    private int timeTakenToHealthCenter;
+    private Integer timeTakenToHealthCenter;
 }

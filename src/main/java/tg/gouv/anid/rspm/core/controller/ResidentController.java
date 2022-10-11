@@ -36,8 +36,8 @@ public class ResidentController {
     }
 
     @PostMapping
-    @Operation(summary = "Créer un résident",
-            description = "Permet d'enrégistrer les informations d'un résident dans le système")
+    @Operation(summary = "Ajouter un membre à un ménage",
+            description = "Permet d'enrégistrer les informations d'un membre de ménage dans le système")
     public ResponseEntity<Response> create(@RequestBody @Valid ResidentReqDto dto) {
         dto.householdIdMandatoryControl();
         return ResponseEntity.ok(Response
@@ -89,16 +89,24 @@ public class ResidentController {
                 .build());
     }
 
-    @PostMapping(value = "{id}/docs")
+    @GetMapping(value = "{id}/docs")
     @Operation(summary = "Récupérer la liste des document d'un résident",
             description = "Permet consulter les documents d'un résident")
     public ResponseEntity<Response> getAllResidentDocByResident(@PathVariable Long id) {
-        return ResponseEntity.ok(Response
-                .builder()
+        return ResponseEntity.ok(Response.builder()
                 .status(HttpStatus.OK)
                 .message("residentDoc.get.success")
+                .service("core-service")
                 .data(residentDocService.getByResidentId(id))
                 .build());
+    }
+
+    @DeleteMapping(value = "{id}")
+    @Operation(summary = "Supprimer un résident",
+            description = "Permet de supprimer logiquement un résident dans le système")
+    public ResponseEntity<Response> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(residentService.deleteLogicaly(id)));
     }
 
 

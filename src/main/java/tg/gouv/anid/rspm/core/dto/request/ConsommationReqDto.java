@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class ConsommationReqDto {
+    @JsonIgnore
     private Long id;
     private Long householdId;
     private Double annualFoodConso;

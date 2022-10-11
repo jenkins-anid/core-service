@@ -12,7 +12,6 @@ import java.util.Set;
 @Data
 public class AssetsRemitanceRespDto {
     private Long id;
-    private HouseholdRespDto household;
     private boolean activeRemitance;
     private Set<RemitanceSenderInfoRespDto> senderInfos;
     private Float annualFoodRemitanceTotalAmount;

@@ -46,7 +46,7 @@ public class ResidentReqDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "resident.birthDate.mandatory")
     private LocalDate birthDate;
-    @NotBlank(message = "resident.maritalStatus.mandatory")
+    @NotNull(message = "resident.maritalStatus.mandatory")
     private MaritalStatus maritalStatus;
     @NotNull(message = "resident.profession.mandatory")
     private Long professionId;
@@ -81,7 +81,10 @@ public class ResidentReqDto {
     private int timeTakenSchool;
 
     public void householdIdMandatoryControl() {
-        if (Objects.nonNull(householdId))
+        if (Objects.isNull(householdId))
             throw new ApplicationException("household.id.mandatory");
+        if (Boolean.TRUE.equals(isHead)) {
+            throw new ApplicationException("household.head.duplication");
+        }
     }
 }

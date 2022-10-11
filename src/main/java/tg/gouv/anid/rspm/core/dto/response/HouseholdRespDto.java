@@ -2,6 +2,8 @@ package tg.gouv.anid.rspm.core.dto.response;
 
 import lombok.Data;
 
+import java.util.Set;
+
 /**
  * @author Francis AHONSU
  *
@@ -25,4 +27,6 @@ public class HouseholdRespDto {
     private Double healthCenterDistance;
     private int timeTakenToHealthCenter;
     private ScoreRespDto score;
+    private String designatedUIN;
+    private Set<ResidentRespDto> members;
 }

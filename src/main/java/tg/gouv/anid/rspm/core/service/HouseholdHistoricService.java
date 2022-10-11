@@ -24,7 +24,7 @@ public class HouseholdHistoricService extends GenericService<HouseholdHistoric, 
 
     @Transactional
     public void updateOldHistoric(String uin) {
-        getRepository().updateOldHistoric(uin, HistoricStatus.CURRENT, HistoricStatus.OLD);
+        getRepository().updateOldHistoric(uin);
     }
 
     @Override

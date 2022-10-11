@@ -9,6 +9,7 @@ import tg.gouv.anid.rspm.core.dto.response.HouseholdRespDto;
 import tg.gouv.anid.rspm.core.enums.HistoricStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
@@ -30,24 +31,26 @@ public class HouseholdHistoric extends Auditable<String> {
     @Column(name = "HIST_ID")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "HH_ID")
+    @JoinColumn(name = "HH_ID", nullable = false)
+    @NotNull(message = "household.hist")
     private Household household;
     @ManyToOne
-    @JoinColumn(name = "RES_ID")
+    @JoinColumn(name = "RES_ID", nullable = false)
     private Resident resident;
-    @Column(name = "RES_UIN")
+    @Column(name = "RES_UIN", nullable = false)
     private String uin;
-    @Column(name = "HIST_STATUS")
+    @Column(name = "HIST_STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
     private HistoricStatus historicStatus;
-    @Column(name = "HH_NIM")
+    @Column(name = "HH_NIM", nullable = false)
     private String hin;
-    @Column(name = "HIST_DATE")
+    @Column(name = "HIST_DATE", nullable = false)
     private LocalDate historicDate;
 
     public HouseholdHistoric(Resident resident, HouseholdRespDto household, HistoricStatus historicStatus) {
         this.resident = resident;
-        this.household.setId(household.getId());
+        this.uin = resident.getUin();
+        this.household = new Household(household.getId());
         this.historicDate = LocalDate.now();
         this.hin = household.getHin();
         this.historicStatus = historicStatus;
@@ -55,7 +58,8 @@ public class HouseholdHistoric extends Auditable<String> {
 
     public HouseholdHistoric(Resident resident, Household household, HistoricStatus historicStatus) {
         this.resident = resident;
-        this.household.setId(household.getId());
+        this.uin = resident.getUin();
+        this.household = new Household(household.getId());
         this.historicDate = LocalDate.now();
         this.hin = household.getHin();
         this.historicStatus = historicStatus;

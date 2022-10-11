@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,7 +48,7 @@ public class Household extends Auditable<String> {
     private Integer interviewYear;
     @NotNull(message = "household.size.mandatory")
     @Column(name = "HH_SIZE")
-    private int size;
+    private Integer size;
     @Column(name = "HH_WEIGHT")
     private Double weight;
     @Column(name = "HH_NB_ADULT")
@@ -64,19 +65,27 @@ public class Household extends Auditable<String> {
     @Column(name = "HH_DIST_HEALTH")
     private Double healthCenterDistance;
     @Column(name = "HH_TTAKEN_HEALTH")
-    private int timeTakenToHealthCenter;
+    private Integer timeTakenToHealthCenter;
     @Column(name = "HH_DESIGNATED_ID")
     private String designatedUIN;
-    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-    private Set<HouseholdAssetsUtil> assetsUtils;
-    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-    private Set<HouseholdAssetsDurable> assetsDurables;
-    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-    private Set<HouseholdAssetsRemitance> assetsRemitances;
-    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-    private Set<HouseholdConsommation> consommations;
     @OneToOne(mappedBy = "household")
     private Score score;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<HouseholdAssetsUtil> assetsUtils;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<HouseholdAssetsDurable> assetsDurables;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<HouseholdAssetsRemitance> assetsRemitances;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<HouseholdConsommation> consommations;
+    @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Resident> members;
+
 
     public Household(Long id) {
         this.id = id;

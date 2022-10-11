@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,8 +28,9 @@ public class RemitanceSenderInfo extends Auditable<String> {
     @JoinColumn(name = "RSI_ID")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "HH_ID")
-    private Household household;
+    @JoinColumn(name = "ASR_ID")
+    @JsonIgnore
+    private HouseholdAssetsRemitance assetsRemitance;
     @Column(name = "RSI_SEX")
     private String sex;
     @Column(name = "RSI_RELEATIONSHIP")

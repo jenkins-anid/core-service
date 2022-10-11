@@ -2,6 +2,7 @@ package tg.gouv.anid.rspm.core.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.common.entities.exception.ApplicationException;
 import tg.gouv.anid.common.entities.exception.ResourceNotFoundException;
 import tg.gouv.anid.common.entities.service.GenericService;
@@ -20,12 +21,12 @@ import tg.gouv.anid.rspm.core.enums.ResidentStatus;
 import tg.gouv.anid.rspm.core.mapper.HouseholdMapper;
 import tg.gouv.anid.rspm.core.mapper.ResidentDocMapper;
 import tg.gouv.anid.rspm.core.mapper.ResidentMapper;
-import tg.gouv.anid.rspm.core.repository.ResidentDocRepository;
 import tg.gouv.anid.rspm.core.repository.ResidentRepository;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -41,25 +42,49 @@ public class ResidentService extends GenericService<Resident, Long> {
 
     private final ResidentMapper residentMapper;
     private final ResidentDocMapper residentDocMapper;
-    private final ResidentDocRepository residentDocRepository;
+    private final ResidentDocService residentDocService;
     private final HouseholdMapper householdMapper;
     private final HouseholdService householdService;
     private final HouseholdHistoricService householdHistoricService;
 
     public ResidentService(ResidentRepository repository,
                               ResidentMapper residentMapper,
-                              ResidentDocRepository residentDocRepository,
+                              ResidentDocService residentDocService,
                               ResidentDocMapper residentDocMapper,
                               HouseholdMapper householdMapper,
                               HouseholdService householdService,
                            HouseholdHistoricService householdHistoricService) {
         super(repository);
         this.residentMapper = residentMapper;
-        this.residentDocRepository = residentDocRepository;
+        this.residentDocService = residentDocService;
         this.residentDocMapper = residentDocMapper;
         this.householdMapper = householdMapper;
         this.householdService = householdService;
         this.householdHistoricService = householdHistoricService;
+    }
+
+    @Transactional
+    @Override
+    public Resident create(Resident resident) {
+        super.create(resident);
+        updateHouseholdCountSize(resident.getHouseholdId());
+        return resident;
+    }
+
+    @Transactional
+    public void updateHouseholdCountSize(Long householdId) {
+        if (Objects.nonNull(householdId)) {
+            Integer size = getRepository().countByHousehold_id(householdId);
+            Integer adultCount = getRepository().countByHousehold_idAndAgeGreaterThanEqual(householdId, 18);
+            householdService.updateHouseholdSize(householdId, size, adultCount);
+        }
+    }
+
+    @Override
+    public Resident update(Resident resident) {
+        super.update(resident);
+        updateHouseholdCountSize(resident.getHouseholdId());
+        return resident;
     }
 
     @Transactional
@@ -76,7 +101,7 @@ public class ResidentService extends GenericService<Resident, Long> {
         HouseholdRespDto householdRespDto = householdService.createHousehold(household);
         //update the resident with household
         head.setHousehold(new Household(householdRespDto.getId()));
-        repository.saveAndFlush(head);
+        update(head);
         //return response
         ResidentRespDto headDto = residentMapper.toResidentRespDto(head);
         householdRespDto.setHead(headDto);
@@ -88,10 +113,20 @@ public class ResidentService extends GenericService<Resident, Long> {
         householdService.saveHistoric(new HouseholdHistoric(resident, householdRespDto, HistoricStatus.CURRENT));
     }
 
+    public Set<Resident> getAllByHousehold(Long householdId) {
+        return getRepository().findAllByHousehold_idAndStateNotAndStatusIn(householdId, State.DELETED,
+                List.of(ResidentStatus.IN_HOUSEHOLD, ResidentStatus.PENDING));
+    }
+
+    public Set<ResidentRespDto> getAllByHouseholdFormat(Long householdId) {
+        return residentMapper.toResidentRespDtoSet(getAllByHousehold(householdId));
+    }
+
     @Transactional
     public ResidentRespDto updateHousehold(@NotNull ResidentReqDto dto) {
         Resident resident = residentMapper.toResident(dto);
         Resident old = getById(resident.getId());
+        resident.setStatus(old.getStatus());
         if (!resident.validateUnchangeableInfo(old)) {
             throw new ApplicationException("unchangeable.data.validation.failed");
         }
@@ -100,12 +135,12 @@ public class ResidentService extends GenericService<Resident, Long> {
 
     public Resident getById(Long id) {
         return getOne(id)
-                .filter(Resident::isDeleted)
+                .filter(resident -> !resident.isDeleted())
                 .orElseThrow(() -> new ResourceNotFoundException("resident.not.found"));
     }
 
 
-    public Resident getByUin(String uin) {
+    public Resident getByUin(@NotNull String uin) {
         return getRepository()
                 .findByUin(uin)
                 .filter(resident -> !resident.isDeleted())
@@ -141,7 +176,16 @@ public class ResidentService extends GenericService<Resident, Long> {
         ResidentDoc residentDoc = residentDocMapper.toResidentDoc(dto);
         return residentDocMapper
                 .toResidentDocRespDto(
-                        residentDocRepository.save(residentDoc));
+                        residentDocService.create(residentDoc));
+    }
+
+    @Transactional
+    public boolean deleteLogicaly(Long id) {
+        Resident resident = getById(id);
+        List<ResidentDoc> docs = residentDocService.getByResident(id);
+        docs.forEach(residentDoc -> residentDocService.deleteSoft(residentDoc.getId()));
+        householdHistoricService.updateOldHistoric(resident.getUin());
+        return deleteSoft(resident.getId());
     }
 
     @Override

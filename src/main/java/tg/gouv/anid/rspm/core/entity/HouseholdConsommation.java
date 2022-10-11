@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class HouseholdConsommation extends Auditable<String> {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "HH_ID")
+    @JsonIgnore
     private Household household;
     @Column(name = "CONS_FOOD_ANN")
     private Double annualFoodConso;

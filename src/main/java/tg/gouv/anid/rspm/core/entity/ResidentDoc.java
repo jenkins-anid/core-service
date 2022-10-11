@@ -21,6 +21,7 @@ public class ResidentDoc extends Auditable<String> {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "RES_ID")
+    @NotNull(message = "residentDoc.resident.id.mandatory")
     private Resident resident;
     @NotNull(message = "residentDoc.type.mandatory")
     @Column(name = "R_DOC_TYPE")

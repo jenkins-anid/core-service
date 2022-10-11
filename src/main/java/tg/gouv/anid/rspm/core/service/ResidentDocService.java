@@ -2,6 +2,7 @@ package tg.gouv.anid.rspm.core.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.common.entities.service.GenericService;
 import tg.gouv.anid.rspm.core.dto.response.ResidentDocRespDto;
 import tg.gouv.anid.rspm.core.entity.ResidentDoc;
@@ -22,7 +23,7 @@ public class ResidentDocService extends GenericService<ResidentDoc, Long> {
     }
 
     public List<ResidentDoc> getByResident(Long residentId) {
-        return getRepository().findAllByResident_id(residentId);
+        return getRepository().findAllByResident_idAndStateNot(residentId, State.DELETED);
     }
 
     public List<ResidentDocRespDto> getByResidentId(Long residentId) {

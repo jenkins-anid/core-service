@@ -16,10 +16,10 @@ import tg.gouv.anid.rspm.core.entity.ResidentDoc;
 @Mapper(componentModel = "spring")
 public interface ResidentDocMapper {
 
-
     ResidentDocRespDto toResidentDocRespDto(ResidentDoc residentDoc);
 
     @Mapping(target = "object", expression = "java(convertToByteArray(dto.getObject()))")
+    @Mapping(source = "residentId", target = "resident.id")
     ResidentDoc toResidentDoc(ResidentDocReqDto dto);
 
     default byte[] convertToByteArray(String base64) {

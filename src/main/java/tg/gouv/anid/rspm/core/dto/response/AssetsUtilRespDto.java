@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class AssetsUtilRespDto {
     private Long id;
-    private HouseholdRespDto household;
     private int roomsCount;
     private Long roofTypeId;
     private Long wallTypeId;

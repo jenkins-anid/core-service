@@ -14,7 +14,7 @@ public class HouseholdHeadChangeDto {
     @NotBlank(message = "household.hin.mandatory")
     private String hin;
     @NotBlank(message = "household.oldHead.mandatory")
-    private String oldHouseholdHead;
+    private String oldHouseholdHeadUIN;
     @NotBlank(message = "household.newHead.mandatory")
-    private String newHouseholdHead;
+    private String newHouseholdHeadUIN;
 }

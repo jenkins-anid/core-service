@@ -12,7 +12,6 @@ import tg.gouv.anid.rspm.core.entity.Household;
 @Data
 public class AssetsDurableRespDto {
     private Long id;
-    private HouseholdRespDto household;
     private boolean haveRadio;
     private boolean haveTV;
     private boolean haveVideo;

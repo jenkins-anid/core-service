@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -116,9 +117,9 @@ public class Resident extends Auditable<String> {
     private String locality;
     @Column(name = "RES_ADDRESS")
     private String address;
-    @Column(name = "RES_TEL")
+    @Column(name = "RES_TEL", unique = true)
     private String phone;
-    @Column(name = "RES_EMAIL")
+    @Column(name = "RES_EMAIL", unique = true)
     private String email;
     @NotBlank(message = "resident.relationHousehold.mandatory")
     @Column(name = "RES_RELATION_HH")
@@ -133,11 +134,14 @@ public class Resident extends Auditable<String> {
     @Enumerated(EnumType.STRING)
     private ResidentStatus status;
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<HouseholdHistoric> historics;
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<ResidentDoc> residentDocs;
 
     @PrePersist
+    @PreUpdate
     @Override
     public void setUp() {
         super.setUp();
@@ -148,7 +152,8 @@ public class Resident extends Auditable<String> {
     public void statusCheck() {
         if (Objects.isNull(status)) {
             this.status = ResidentStatus.CREATE;
-        }else if (!ResidentStatus.BANNED.equals(status)
+        } else if (!ResidentStatus.BANNED.equals(status)
+                && !ResidentStatus.DEPARTURE.equals(status)
                 &&  isHouseholdNonNull()) {
             this.status = ResidentStatus.IN_HOUSEHOLD;
         }
@@ -166,7 +171,7 @@ public class Resident extends Auditable<String> {
                 && household.getId().equals(old.getHousehold().getId())
                 && sex.equals(old.getSex())
                 && birthDate.equals(old.getBirthDate())
-                && status.equals(old.getStatus())) {
+        ) {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;

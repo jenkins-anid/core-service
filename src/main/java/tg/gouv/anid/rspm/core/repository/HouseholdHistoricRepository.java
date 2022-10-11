@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface HouseholdHistoricRepository extends BaseRepository<HouseholdHistoric, Long, Long> {
 
     @Modifying
-    @Query(value = "UPDATE RS_H_HOLD_HIST SET HIST_STATUS = :status WHERE RES_UIN = :uin and HIST_STATUS = :current")
-    void updateOldHistoric(@Param("uin") String uin, @Param("current") HistoricStatus current, @Param("status") HistoricStatus status);
+    @Query(value = "UPDATE RS_H_HOLD_HIST SET HIST_STATUS = 'OLD' WHERE RES_UIN = :uin and HIST_STATUS = 'CURRENT'", nativeQuery = true)
+    void updateOldHistoric(@Param("uin") String uin);
 
 }

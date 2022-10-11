@@ -2,6 +2,7 @@ package tg.gouv.anid.rspm.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,9 +61,9 @@ public class HouseholdController {
     @PutMapping(value = "{id}/designated-beneficiary")
     @Operation(summary = "Changer le bénéficiaire désigné d'un ménage",
             description = "Permet de désigner un bénéficiaire pour un ménage dans le système")
-    public ResponseEntity<Response> updateDesignatedBeneficiary(@PathVariable Long id, @RequestBody @NotNull String uin) {
+    public ResponseEntity<Response> updateDesignatedBeneficiary(@PathVariable Long id, @RequestBody @NotNull DesignatedUinWrapper uinWrapper) {
         return ResponseEntity.ok(ResponseUtil
-                .successResponse(householdService.updateDesignatedBeneficiary(uin, id)));
+                .successResponse(householdService.updateDesignatedBeneficiary(uinWrapper.getUin(), id)));
     }
 
     @PutMapping(value = "change-head")
@@ -79,6 +80,14 @@ public class HouseholdController {
     public ResponseEntity<Response> transferHouseholdMembers(@RequestBody @Valid TransferHouseholdMembersDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.transferHouseholdMember(dto)));
+    }
+
+    @PutMapping(value = "departure")
+    @Operation(summary = "Déclarer le départ d'un membre de ménage",
+            description = "Permet de déclarer le départ d'un membre d'un ménage afin qu'il puisse intégrer un nouveau ménage")
+    public ResponseEntity<Response> declareDeparture(@RequestBody @Valid MemberDepartureDto dto) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.declareMemberDeparture(dto)));
     }
 
     @PutMapping(value = "transfer/validate")
@@ -106,6 +115,16 @@ public class HouseholdController {
                 .successResponse(householdService.getOneHousehold(id)));
     }
 
+    @GetMapping(value = "{id}/members")
+    @Operation(summary = "Récupérer les membres d'un ménage",
+            description = "Permet de consulter la liste des membres d'un ménage dans le système")
+    public ResponseEntity<Response> getHouseholdMembers(@PathVariable Long id) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.getAllHouseholdMembers(id)));
+    }
+
+
+
     @GetMapping(value = "{householdId}/assets")
     @Operation(summary = "Récupérer la liste des tous les actifs d'un ménage",
             description = "Permet de consulter la liste des actifs d'un  ménages dans le système")
@@ -119,11 +138,19 @@ public class HouseholdController {
             description = "Permet de consulter la liste paginée des  ménages dans le système")
     public ResponseEntity<Response> getAll(Pageable pageable) {
         return ResponseEntity.ok(ResponseUtil
-                .successResponse(householdService.getAll(pageable)));
+                .successResponse(householdService.getAllHousehold(pageable)));
+    }
+
+    @GetMapping(value = "all")
+    @Operation(summary = "Récupérer la liste des ménages",
+            description = "Permet de consulter la liste total des  ménages dans le système")
+    public ResponseEntity<Response> getAll() {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.getAllHousehold()));
     }
 
     @GetMapping(value = "{householdId}/consommation")
-    @Operation(summary = "Permet de consulter la liste des consommations d'un ménage dans le système",
+    @Operation(summary = "Consulter la liste des consommations",
             description = "Permet de consulter la liste des consommations d'un ménage dans le système")
     public ResponseEntity<Response> getConsommationByHousehold(@PathVariable Long householdId) {
         return ResponseEntity.ok(ResponseUtil
@@ -171,7 +198,7 @@ public class HouseholdController {
     }
 
     @GetMapping(value = "{householdId}/assets-remittance")
-    @Operation(summary = "Récupérer les actifs durable d'un ménage",
+    @Operation(summary = "Récupérer les transferts de fond d'un ménage",
             description = "Permet de consulter la liste des versements d'un ménage dans le système")
     public ResponseEntity<Response> getAssetsRemitanceByHousehold(@PathVariable Long householdId) {
         return ResponseEntity.ok(ResponseUtil
@@ -184,6 +211,19 @@ public class HouseholdController {
     public ResponseEntity<Response> addRemittance(@RequestBody @Valid AssetsRemitanceReqDto dto) {
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(assetsRemitanceService.addAssetsRemitance(dto)));
+    }
+
+    @DeleteMapping(value = "{id}")
+    @Operation(summary = "Supprimer un ménage",
+            description = "Permet de supprimer logiquement un ménage dans le système")
+    public ResponseEntity<Response> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(ResponseUtil
+                .successResponse(householdService.deleteLogicaly(id)));
+    }
+
+    @Data
+    private static class DesignatedUinWrapper {
+        private String uin;
     }
 
 }

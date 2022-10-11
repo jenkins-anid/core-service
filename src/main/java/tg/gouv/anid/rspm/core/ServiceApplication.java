@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @RefreshScope
 @EnableJpaRepositories(basePackages = "tg.gouv.anid",repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableDiscoveryClient
+@EnableFeignClients("tg.gouv.anid.rspm.core.client.openfeign")
 public class ServiceApplication {
 
 	public static void main(String[] args) {

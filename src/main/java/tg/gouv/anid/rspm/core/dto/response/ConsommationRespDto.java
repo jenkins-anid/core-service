@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class ConsommationRespDto {
     private Long id;
-    private HouseholdRespDto household;
     private Double annualFoodConso;
     private Double annualAllConso;
     private Double adultAnnualFoodExpense;
