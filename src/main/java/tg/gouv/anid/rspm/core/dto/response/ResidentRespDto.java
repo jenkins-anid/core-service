@@ -13,6 +13,8 @@ import java.time.LocalDate;
  */
 @Data
 public class ResidentRespDto {
+    private Long id;
+    private String uin;
     private String name;
     private String surname;
     private boolean isHead;

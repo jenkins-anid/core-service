@@ -2,6 +2,7 @@ package tg.gouv.anid.rspm.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("api/residents")
 @Tag(name = "API de gestion des résidents")
+@Slf4j(topic = "EventLog")
 public class ResidentController {
     private final ResidentService residentService;
     private final ResidentDocService residentDocService;
@@ -40,6 +42,7 @@ public class ResidentController {
             description = "Permet d'enrégistrer les informations d'un membre de ménage dans le système")
     public ResponseEntity<Response> create(@RequestBody @Valid ResidentReqDto dto) {
         dto.householdIdMandatoryControl();
+        log.info("Ajout de membre de ménage | POST api/residents | dto : {}", dto);
         return ResponseEntity.ok(Response
                 .builder()
                 .status(HttpStatus.OK)
@@ -52,6 +55,7 @@ public class ResidentController {
             description = "Permet de modifier les informations d'un résident dans le système")
     public ResponseEntity<Response> update(@PathVariable Long id,@RequestBody @Valid ResidentReqDto dto) {
         dto.setId(id);
+        log.info("Update de membre de ménage | PUT api/residents | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil.successResponse(residentService.updateHousehold(dto)));
     }
 
@@ -59,6 +63,7 @@ public class ResidentController {
     @Operation(summary = "Créer un chef de Ménage",
             description = "Permet d'enrégistrer un chef de ménage et par ricochet le ménage")
     public ResponseEntity<Response> createHouseholdHead(@RequestBody @Valid HouseholdHeadReqDto dto) {
+        log.info("Créer un chef de ménage | POST api/residents/household-head | dto : {}", dto);
         return ResponseEntity.ok(
                 ResponseUtil.successResponse(
                         residentService.createHouseholdHeadResident(dto)));
@@ -69,6 +74,7 @@ public class ResidentController {
     @Operation(summary = "Récupérer la liste des résidents",
             description = "Permet de récupérer la liste paginée des résidents")
     public ResponseEntity<Response> getAll(Pageable pageable) {
+        log.info("Récupérer la liste des résidents | GET api/residents | pageable : {}", pageable);
         return ResponseEntity.ok(Response
                 .builder()
                 .status(HttpStatus.OK)
@@ -81,6 +87,7 @@ public class ResidentController {
     @Operation(summary = "Enrégistrer un document d'un résident",
             description = "Permet d'ajouter un document d'un résident")
     public ResponseEntity<Response> addResidentDoc(@RequestBody @Valid ResidentDocReqDto dto) {
+        log.info("Ajout de document d'un membre de ménage | POST api/residents/add-resident-doc | dto : {}", dto);
         return ResponseEntity.ok(Response
                 .builder()
                         .status(HttpStatus.OK)
@@ -93,6 +100,7 @@ public class ResidentController {
     @Operation(summary = "Récupérer la liste des document d'un résident",
             description = "Permet consulter les documents d'un résident")
     public ResponseEntity<Response> getAllResidentDocByResident(@PathVariable Long id) {
+        log.info("Récupérer les documents d'un résident | GET api/residents/{}/docs | dto : no-data",id);
         return ResponseEntity.ok(Response.builder()
                 .status(HttpStatus.OK)
                 .message("residentDoc.get.success")
@@ -105,6 +113,7 @@ public class ResidentController {
     @Operation(summary = "Supprimer un résident",
             description = "Permet de supprimer logiquement un résident dans le système")
     public ResponseEntity<Response> delete(@PathVariable Long id) {
+        log.info("Suppression d'un ménage | DELETE api/residents/{} | dto : no-data", id);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(residentService.deleteLogicaly(id)));
     }

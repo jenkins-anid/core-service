@@ -3,7 +3,7 @@ package tg.gouv.anid.rspm.core.repository;
 import tg.gouv.anid.rspm.core.entity.RemitanceSenderInfo;
 
 /**
- * Classe repository pour la gestion des des transferts d'argent reçu par le ménage
+ * Classe repository pour la gestion des transferts d'argent reçu par le ménage
  *
  * @author Francis AHONSU
  *

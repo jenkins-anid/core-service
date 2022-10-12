@@ -92,19 +92,30 @@ public class Household extends Auditable<String> {
     }
 
     public Optional<HouseholdAssetsUtil> getAssetsUtil() {
-        return this.assetsUtils.stream().findFirst();
+        return this.assetsUtils.stream()
+                .filter(householdAssetsUtil -> !householdAssetsUtil.isDeleted())
+                .findFirst();
     }
 
     public Optional<HouseholdAssetsDurable> getAssetsDurable() {
-        return this.assetsDurables.stream().findFirst();
+        return this.assetsDurables
+                .stream()
+                .filter(assetsDurable -> !assetsDurable.isDeleted())
+                .findFirst();
     }
 
     public Optional<HouseholdAssetsRemitance> getAssetsRemittance() {
-        return this.assetsRemitances.stream().findFirst();
+        return this.assetsRemitances
+                .stream()
+                .filter(assetsRemitance -> !assetsRemitance.isDeleted())
+                .findFirst();
     }
 
     public Optional<HouseholdConsommation> getConsommation() {
-        return this.consommations.stream().findFirst();
+        return this.consommations
+                .stream()
+                .filter(consommation -> !consommation.isDeleted())
+                .findFirst();
     }
 
 

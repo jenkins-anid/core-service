@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import tg.gouv.anid.common.entities.enums.HouseholdRelationship;
 import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.common.entities.exception.ApplicationException;
@@ -23,8 +24,10 @@ import tg.gouv.anid.rspm.core.enums.ResidentStatus;
 import tg.gouv.anid.rspm.core.mapper.HouseholdMapper;
 import tg.gouv.anid.rspm.core.repository.HouseholdRepository;
 
+import javax.management.relation.Relation;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -65,7 +68,7 @@ public class HouseholdService extends GenericService<Household, Long> {
 
     @Override
     public Household create(Household household) {
-        household.setHin(generateHIN());
+        household.setHin(generateHIN(household.getHeadId()));
         household.setStatus("CREATE");
         return super.create(household);
     }
@@ -91,6 +94,9 @@ public class HouseholdService extends GenericService<Household, Long> {
         if (household.validateUnchanheableField(old)) {
             throw new ApplicationException("household.unchangeable.violated");
         }
+        household.setStatus(old.getStatus());
+        update(household);
+        residentService.updateHouseholdCountSize(household.getId());
         return householdMapper.toHouseholdRespDto(household);
     }
 
@@ -133,7 +139,7 @@ public class HouseholdService extends GenericService<Household, Long> {
         newHead.setHead(Boolean.TRUE);
         newHead.setRelationHousehold(HouseholdRelationship.HEAD.name());
         oldHead.setHead(Boolean.FALSE);
-        oldHead.setRelationHousehold(null);
+        oldHead.setRelationHousehold("NOT PROVIDED");
         residentService.update(newHead);
         residentService.update(oldHead);
         //todo: notificiation
@@ -167,7 +173,7 @@ public class HouseholdService extends GenericService<Household, Long> {
 
     public void householdHeadTransferControl(Resident resident) {
         if (resident.isHead()) {
-            throw new ApplicationException("household.head.transfer.unauthorize");
+            throw new ApplicationException("household.head.transfer.unauthorized");
         }
     }
 
@@ -203,6 +209,8 @@ public class HouseholdService extends GenericService<Household, Long> {
     //todo: generateOTP method
 
     public boolean validateOTP(@NotNull String otp, @NotNull String uin) {
+        StringUtils.hasText(otp);
+        StringUtils.hasText(uin);
         //todo: validateOTP method impl
         return Boolean.TRUE;
     }
@@ -213,10 +221,18 @@ public class HouseholdService extends GenericService<Household, Long> {
         Set<Resident> residents = residentService.getAllByHousehold(id);
         residents.forEach(resident -> residentService.deleteLogicaly(resident.getId()));
         HouseholdAssetsRespDto dto = getAllHouseholdAssets(id);
-        consommationService.deleteSoft(dto.getConsommation().getId());
-        assetsDurableService.deleteSoft(dto.getDurable().getId());
-        assetsUtilService.deleteSoft(dto.getUtil().getId());
-        assetsRemitanceService.deleteSoft(dto.getRemittance().getId());
+        if (Objects.nonNull(dto.getConsommation())) {
+            consommationService.deleteSoft(dto.getConsommation().getId());
+        }
+        if (Objects.nonNull(dto.getDurable())) {
+            assetsDurableService.deleteSoft(dto.getDurable().getId());
+        }
+        if (Objects.nonNull(dto.getUtil())) {
+            assetsUtilService.deleteSoft(dto.getUtil().getId());
+        }
+        if (Objects.nonNull(dto.getRemittance())) {
+            assetsRemitanceService.deleteSoft(dto.getRemittance().getId());
+        }
         return deleteSoft(household.getId());
     }
 
@@ -307,8 +323,27 @@ public class HouseholdService extends GenericService<Household, Long> {
                 .toList(), pageable, households.getTotalElements());
     }
 
-    private String generateHIN() {
-        return RandomStringUtils.randomNumeric(10);
+    private String generateHIN(Long idHeadOfHousehold) {
+        LocalDate now = LocalDate.now();
+        String yearStr = String.valueOf(now.getYear());
+        String yy = "" + yearStr.substring(2);
+        String nim;
+        int length = idHeadOfHousehold.toString().length();
+        if (length == 1)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(6);
+        else if (length == 2)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(5);
+        else if (length == 3)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(4);
+        else if (length == 4)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(3);
+        else if (length == 5)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(2);
+        else if (length == 6)
+            nim = yy + idHeadOfHousehold + RandomStringUtils.randomNumeric(1);
+        else
+            nim = yy + idHeadOfHousehold;
+        return nim;
     }
 
     public List<HouseholdRespDto> getAllHousehold() {
@@ -316,7 +351,7 @@ public class HouseholdService extends GenericService<Household, Long> {
     }
 
     public HouseholdRespDto getOneHousehold(Long id) {
-        Household household = getOne(id).orElseThrow(() -> new ResourceNotFoundException("household.not.found"));
+        Household household = getById(id);
         return householdMapper.toHouseholdRespDto(household);
     }
 

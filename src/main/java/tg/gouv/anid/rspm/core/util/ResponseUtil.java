@@ -15,4 +15,12 @@ public class ResponseUtil {
                 .service("core-service")
                 .data(data).build();
     }
+
+    public static Response errorResponse(HttpStatus status, String message) {
+        return Response.builder()
+                .status(status)
+                .message(message)
+                .service("core-service")
+                .data(null).build();
+    }
 }

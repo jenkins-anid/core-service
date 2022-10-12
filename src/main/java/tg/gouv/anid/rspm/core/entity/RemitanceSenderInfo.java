@@ -39,4 +39,6 @@ public class RemitanceSenderInfo extends Auditable<String> {
     private Double amount;
     @Column(name = "RSI_AMOUNT_CURRENCY")
     private String devise;
+    @Column(name = "RSI_ORIGIN")
+    private String originCountry;
 }

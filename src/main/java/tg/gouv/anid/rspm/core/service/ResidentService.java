@@ -22,6 +22,7 @@ import tg.gouv.anid.rspm.core.mapper.HouseholdMapper;
 import tg.gouv.anid.rspm.core.mapper.ResidentDocMapper;
 import tg.gouv.anid.rspm.core.mapper.ResidentMapper;
 import tg.gouv.anid.rspm.core.repository.ResidentRepository;
+import tg.gouv.anid.rspm.core.util.DateUtil;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -92,8 +93,16 @@ public class ResidentService extends GenericService<Resident, Long> {
         //save the resident
         Resident head = residentMapper.toResident(dto.getHead());
         checkExistingResidentAndUpdateHistoric(head.getUin());
+        head.setHead(Boolean.TRUE);
         //todo: check UIN existing in resident control table
-        create(head);
+        if (getRepository().existsByUinAndStatusIs(head.getUin(), ResidentStatus.DEPARTURE)) {
+            Resident oldOne = getByUin(head.getUin());
+            head.setId(oldOne.getId());
+            update(head);
+        }else {
+            create(head);
+        }
+
         //save the household
         Household household = householdMapper.toHousehold(dto.getHousehold());
         household.setHeadId(head.getId());
@@ -164,6 +173,11 @@ public class ResidentService extends GenericService<Resident, Long> {
     public ResidentRespDto addResident(ResidentReqDto dto) {
         Resident resident = residentMapper.toResident(dto);
         checkExistingResidentAndUpdateHistoric(resident.getUin());
+        resident.setHead(Boolean.FALSE);
+        if (getRepository().existsByUinAndStatusIs(resident.getUin(), ResidentStatus.DEPARTURE)) {
+            Resident oldOne = getByUin(resident.getUin());
+            resident.setId(oldOne.getId());
+        }
         //Vérifier les contraintes réferentiel avant l'enrégistrement
         //Récupérer les objets des autres services après enrégistrement
         ResidentRespDto residentRespDto = residentMapper.toResidentRespDto(this.create(resident));

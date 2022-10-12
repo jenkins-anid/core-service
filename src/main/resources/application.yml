@@ -25,8 +25,7 @@ spring:
     hibernate:
       ddl-auto: update
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: tg.gouv.anid.rspm.core.config.DatabaseNamingStrategy
         #org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     database: postgresql

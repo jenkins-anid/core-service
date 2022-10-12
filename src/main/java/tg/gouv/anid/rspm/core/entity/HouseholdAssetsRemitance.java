@@ -25,7 +25,7 @@ import java.util.Set;
 public class HouseholdAssetsRemitance extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "ASR_ID")
+    @Column(name = "ASR_ID")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "HH_ID")

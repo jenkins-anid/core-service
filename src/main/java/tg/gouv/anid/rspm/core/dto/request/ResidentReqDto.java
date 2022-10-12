@@ -27,7 +27,6 @@ public class ResidentReqDto {
     private String name;
     @NotBlank(message = "resident.surname.mandatory")
     private String surname;
-    @NotNull(message = "resident.isHead.mandatory")
     private boolean isHead;
 
     private Long householdId;

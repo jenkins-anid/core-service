@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import tg.gouv.anid.rspm.core.entity.Household;
 
 import java.util.Optional;

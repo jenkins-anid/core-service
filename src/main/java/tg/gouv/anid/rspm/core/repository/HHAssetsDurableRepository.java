@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.repository;
 
+import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.rspm.core.entity.HouseholdAssetsDurable;
 
 import java.util.List;
@@ -12,5 +13,5 @@ import java.util.List;
  * @version 0.0.1
  */
 public interface HHAssetsDurableRepository extends BaseRepository<HouseholdAssetsDurable, Long, Long> {
-    List<HouseholdAssetsDurable> findAllByHousehold_id(Long id);
+    List<HouseholdAssetsDurable> findAllByHousehold_idAndStateNot(Long id, State state);
 }

@@ -19,6 +19,8 @@ public interface ResidentRepository extends BaseRepository<Resident, Long, Long>
 
     boolean existsByUinAndStatusNot(String uin, ResidentStatus status);
 
+    boolean existsByUinAndStatusIs(String uin, ResidentStatus status);
+
     Optional<Resident> findByUin(String uin);
 
     Set<Resident> findAllByHousehold_idAndStateNotAndStatusIn(Long id, State state, List<ResidentStatus> status);

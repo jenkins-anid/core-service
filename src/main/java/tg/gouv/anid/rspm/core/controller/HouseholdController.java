@@ -3,6 +3,7 @@ package tg.gouv.anid.rspm.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @RequestMapping("api/households")
 @Tag(name = "API de gestion des ménages")
+@Slf4j(topic = "EventLog")
 public class HouseholdController {
     private final HouseholdService householdService;
     private final HHConsommationService consommationService;
@@ -45,6 +47,7 @@ public class HouseholdController {
     @Operation(summary = "Créer un ménage",
             description = "Permet de créer un ménage dans le système")
     public ResponseEntity<Response> create(@RequestBody @Valid HouseholdReqDto dto) {
+        log.info("Création de ménage | POST api/households | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil
                         .successResponse(householdService.createHousehold(dto)));
     }
@@ -54,6 +57,8 @@ public class HouseholdController {
             description = "Permet de Modifier les informations d'un ménage dans le système")
     public ResponseEntity<Response> update(@PathVariable Long id, @RequestBody @Valid HouseholdReqDto dto) {
         dto.setId(id);
+        log.info("Edition de ménage | PUT api/households/{} | dto : {}", id, dto);
+        dto.hinNonNullControl();
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.updateHousehold(dto)));
     }
@@ -62,6 +67,7 @@ public class HouseholdController {
     @Operation(summary = "Changer le bénéficiaire désigné d'un ménage",
             description = "Permet de désigner un bénéficiaire pour un ménage dans le système")
     public ResponseEntity<Response> updateDesignatedBeneficiary(@PathVariable Long id, @RequestBody @NotNull DesignatedUinWrapper uinWrapper) {
+        log.info("Update bénéficiaire désigné de ménage | PUT api/households/{}/designated-beneficiary | dto : {}", id, uinWrapper);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.updateDesignatedBeneficiary(uinWrapper.getUin(), id)));
     }
@@ -70,6 +76,7 @@ public class HouseholdController {
     @Operation(summary = "Changer le chef d'un ménage",
             description = "Permet de changer le chef d'un ménage par un autre membre du ménage")
     public ResponseEntity<Response> changeHouseholdHead(@RequestBody @Valid HouseholdHeadChangeDto dto) {
+        log.info("Changement de chef de ménage | PUT api/households/change-head | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.changeHouseholdHead(dto)));
     }
@@ -78,6 +85,7 @@ public class HouseholdController {
     @Operation(summary = "Transférer les membres d'un ménage",
             description = "Permet de transférer un ou plusieurs membre d'un ménage")
     public ResponseEntity<Response> transferHouseholdMembers(@RequestBody @Valid TransferHouseholdMembersDto dto) {
+        log.info("Transfert de membres de ménage | PUT api/households/transfer | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.transferHouseholdMember(dto)));
     }
@@ -86,6 +94,7 @@ public class HouseholdController {
     @Operation(summary = "Déclarer le départ d'un membre de ménage",
             description = "Permet de déclarer le départ d'un membre d'un ménage afin qu'il puisse intégrer un nouveau ménage")
     public ResponseEntity<Response> declareDeparture(@RequestBody @Valid MemberDepartureDto dto) {
+        log.info("Déclaration de départ d'un membre | PUT api/households/departure | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.declareMemberDeparture(dto)));
     }
@@ -94,6 +103,7 @@ public class HouseholdController {
     @Operation(summary = "Valider le transfert des membres d'un ménage",
             description = "Permet de valider le transfert d'un ou de plusieurs membre d'un ménage")
     public ResponseEntity<Response> validateHouseholdMembersTransfer(@RequestBody @Valid HouseholdTransferValidationDto dto) {
+        log.info("Validation de l'intégration d'un membre de ménage | PUT api/households/transfer/validate | dto : {}", dto);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.validateTransfer(dto)));
     }
@@ -103,6 +113,7 @@ public class HouseholdController {
             description = "Permet d'ajouter les actifs à un ménage dans le système")
     public ResponseEntity<Response> addAssets(@PathVariable Long householdId, @RequestBody @Valid HouseholdAssetsReqDto dto) {
         dto.setHouseholdId(householdId);
+        log.info("Ajout des actifs d'un ménage | POST api/households/{}/assets | dto : {}", householdId, dto);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.addHouseholdAssets(dto)));
     }
@@ -111,6 +122,7 @@ public class HouseholdController {
     @Operation(summary = "Récupérer un ménage",
             description = "Permet de consulter un ménage à partir de son id dans le système")
     public ResponseEntity<Response> getOne(@PathVariable Long id) {
+        log.info("Récupération d'un ménage | GET api/households/{} | dto : no-input", id);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.getOneHousehold(id)));
     }
@@ -119,6 +131,7 @@ public class HouseholdController {
     @Operation(summary = "Récupérer les membres d'un ménage",
             description = "Permet de consulter la liste des membres d'un ménage dans le système")
     public ResponseEntity<Response> getHouseholdMembers(@PathVariable Long id) {
+        log.info("Récupération des membres d'un ménage | GET api/households/{}/members | dto : no-input", id);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.getAllHouseholdMembers(id)));
     }
@@ -129,6 +142,7 @@ public class HouseholdController {
     @Operation(summary = "Récupérer la liste des tous les actifs d'un ménage",
             description = "Permet de consulter la liste des actifs d'un  ménages dans le système")
     public ResponseEntity<Response> getAllAssetsByHousehold(@PathVariable Long householdId) {
+        log.info("Récupération des actifs d'un ménage | GET api/households/{}/assets | dto : no-input", householdId);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.getAllHouseholdAssets(householdId)));
     }
@@ -137,6 +151,7 @@ public class HouseholdController {
     @Operation(summary = "Récupérer la liste des ménages",
             description = "Permet de consulter la liste paginée des  ménages dans le système")
     public ResponseEntity<Response> getAll(Pageable pageable) {
+        log.info("Récupération de la liste paginée des ménage | GET api/households | pageable : {}", pageable);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.getAllHousehold(pageable)));
     }
@@ -145,6 +160,7 @@ public class HouseholdController {
     @Operation(summary = "Récupérer la liste des ménages",
             description = "Permet de consulter la liste total des  ménages dans le système")
     public ResponseEntity<Response> getAll() {
+        log.info("Récupération de la liste totale des ménages | GET api/households/ | dto : no-input");
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.getAllHousehold()));
     }
@@ -217,6 +233,7 @@ public class HouseholdController {
     @Operation(summary = "Supprimer un ménage",
             description = "Permet de supprimer logiquement un ménage dans le système")
     public ResponseEntity<Response> delete(@PathVariable Long id) {
+        log.info("Suppression d'un ménage | GET api/households/{} | dto : no-input", id);
         return ResponseEntity.ok(ResponseUtil
                 .successResponse(householdService.deleteLogicaly(id)));
     }

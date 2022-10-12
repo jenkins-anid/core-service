@@ -1,5 +1,6 @@
 package tg.gouv.anid.rspm.core.repository;
 
+import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.rspm.core.entity.HouseholdConsommation;
 
 import java.util.List;
@@ -13,5 +14,5 @@ import java.util.List;
  */
 public interface HHConsommationRepository extends BaseRepository<HouseholdConsommation, Long, Long> {
 
-List<HouseholdConsommation> findAllByHousehold_id(Long id);
+List<HouseholdConsommation> findAllByHousehold_idAndStateNot(Long id, State state);
 }

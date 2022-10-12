@@ -2,7 +2,7 @@ package tg.gouv.anid.rspm.core.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tg.gouv.anid.common.entities.repository.GenericRepository;
+import tg.gouv.anid.common.entities.enums.State;
 import tg.gouv.anid.common.entities.service.GenericService;
 import tg.gouv.anid.rspm.core.dto.request.AssetsRemitanceReqDto;
 import tg.gouv.anid.rspm.core.dto.response.AssetsRemitanceRespDto;
@@ -42,7 +42,7 @@ public class HHAssetsRemitanceService extends GenericService<HouseholdAssetsRemi
     }
 
     public List<HouseholdAssetsRemitance> getByHousehold(Long householdId) {
-        return getRepository().findAllByHousehold_id(householdId);
+        return getRepository().findAllByHousehold_idAndStateNot(householdId, State.DELETED);
     }
 
     public List<AssetsRemitanceRespDto> getByHouseholdId(Long householdId) {

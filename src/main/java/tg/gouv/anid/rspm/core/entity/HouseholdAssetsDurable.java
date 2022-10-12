@@ -25,7 +25,7 @@ import javax.persistence.*;
 public class HouseholdAssetsDurable extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "ASD_ID")
+    @Column(name = "ASD_ID")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "HH_ID")

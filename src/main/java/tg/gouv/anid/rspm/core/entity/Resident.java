@@ -13,6 +13,7 @@ import tg.gouv.anid.rspm.core.model.SchoolLevel;
 import tg.gouv.anid.rspm.core.util.DateUtil;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -78,6 +79,7 @@ public class Resident extends Auditable<String> {
     @Column(name = "RES_MARITAL_STATUS")
     @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;
+    @NotNull(message = "resident.professionId.mandatory")
     @Column(name = "RES_PROFESSION")
     private Long professionId;
     @Transient
@@ -120,6 +122,7 @@ public class Resident extends Auditable<String> {
     @Column(name = "RES_TEL", unique = true)
     private String phone;
     @Column(name = "RES_EMAIL", unique = true)
+    @Email(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$", message = "email.not.valid")
     private String email;
     @NotBlank(message = "resident.relationHousehold.mandatory")
     @Column(name = "RES_RELATION_HH")
@@ -154,6 +157,7 @@ public class Resident extends Auditable<String> {
             this.status = ResidentStatus.CREATE;
         } else if (!ResidentStatus.BANNED.equals(status)
                 && !ResidentStatus.DEPARTURE.equals(status)
+                && !ResidentStatus.PENDING.equals(status)
                 &&  isHouseholdNonNull()) {
             this.status = ResidentStatus.IN_HOUSEHOLD;
         }
