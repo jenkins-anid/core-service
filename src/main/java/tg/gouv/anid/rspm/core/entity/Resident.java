@@ -136,6 +136,8 @@ public class Resident extends Auditable<String> {
     @Column(name = "RES_STATUS")
     @Enumerated(EnumType.STRING)
     private ResidentStatus status;
+    @Column(name = "RES_BANK_ACCT_YN")
+    private boolean haveBankAccount;
     @OneToMany(mappedBy = "resident", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<HouseholdHistoric> historics;

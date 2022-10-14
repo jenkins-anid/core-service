@@ -88,6 +88,22 @@ public class ServiceApplication {
 	public LocalValidatorFactoryBean getValidator() {
 		LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
 		bean.setValidationMessageSource(messageSource());
+		String str = """
+    version: '3.8'
+	services:
+	jenkins:
+	  image: jenkins/jenkins:lts
+	  privileged: true
+	  user: root
+	  ports:
+	   - 8080:8080
+	   - 50000:50000
+	container_name: jenkins
+	volumes:
+	   - /home/francis/JENKINS/CONFIG:/var/jenkins_home
+	   - /var/run/docker.sock:/var/run/docker.sock
+	   """;
+		str.toString();
 		return bean;
 	}
 }

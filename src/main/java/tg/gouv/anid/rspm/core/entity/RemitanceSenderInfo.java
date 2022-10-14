@@ -25,7 +25,7 @@ import javax.persistence.*;
 public class RemitanceSenderInfo extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "RSI_ID")
+    @Column(name = "RSI_ID")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "ASR_ID")

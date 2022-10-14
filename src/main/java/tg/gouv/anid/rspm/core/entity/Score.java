@@ -28,15 +28,15 @@ public class Score extends Auditable<String> {
     @OneToOne
     @JoinColumn(name = "HH_ID")
     private Household household;
-    @Column(name = "SRC_BASE_SCORE")
+    @Column(name = "SCR_BASE_SCORE")
     private int baseScore;
-    @Column(name = "SRC_FINAL_SCORE")
+    @Column(name = "SCR_FINAL_SCORE")
     private int finalScore;
-    @Column(name = "SRC_DATE_SC")
+    @Column(name = "SCR_DATE_SC")
     private LocalDate dateScore;
-    @Column(name = "SRC_COMMENTS")
+    @Column(name = "SCR_COMMENTS")
     private String comments;
-    @Column(name = "SRC_FIN_STATUS")
+    @Column(name = "SCR_FIN_STATUS")
     private String status;
 
 }

@@ -78,6 +78,7 @@ public class ResidentReqDto {
     private String relationHousehold;
     private Double distanceSchool;
     private int timeTakenSchool;
+    private boolean haveBankAccount;
 
     public void householdIdMandatoryControl() {
         if (Objects.isNull(householdId))

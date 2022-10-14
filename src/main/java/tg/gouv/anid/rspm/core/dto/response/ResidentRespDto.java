@@ -50,4 +50,5 @@ public class ResidentRespDto {
     private String score;
     private Double distanceSchool;
     private int timeTakenSchool;
+    private boolean haveBankAccount;
 }

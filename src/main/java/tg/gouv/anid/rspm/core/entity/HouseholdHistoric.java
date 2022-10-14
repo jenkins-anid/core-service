@@ -46,6 +46,11 @@ public class HouseholdHistoric extends Auditable<String> {
     private String hin;
     @Column(name = "HIST_DATE", nullable = false)
     private LocalDate historicDate;
+    @Column(name = "HIST_STATUS_REASON")
+    private String reason;
+    @Column(name = "HIST_COMMENTS")
+    private String comments;
+
 
     public HouseholdHistoric(Resident resident, HouseholdRespDto household, HistoricStatus historicStatus) {
         this.resident = resident;

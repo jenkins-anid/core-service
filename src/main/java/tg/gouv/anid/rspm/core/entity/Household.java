@@ -70,6 +70,10 @@ public class Household extends Auditable<String> {
     private String designatedUIN;
     @OneToOne(mappedBy = "household")
     private Score score;
+    @Column(name = "HH_BASE_SCORE")
+    private Integer baseScore;
+    @Column(name = "HH_FINAL_SCORE")
+    private Integer finalScore;
     @OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<HouseholdAssetsUtil> assetsUtils;
