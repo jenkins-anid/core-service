@@ -6,7 +6,7 @@ pipeline {
             pollSCM('H/2 * * * *')
         }
         tools {
-                jdk '/home/jenkins/jdk-17-0.4.1/'
+                jdk 'jdk-17.0.4.1'
                 maven 'apache-maven'
         }
         stages{
