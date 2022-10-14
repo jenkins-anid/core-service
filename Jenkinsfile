@@ -3,10 +3,10 @@ pipeline {
         triggers {
             pollSCM('H/2 * * * *')
         }
- //       tools {
+        tools {
  //               jdk 'jdk-17.0.4.1'
- //               maven 'apache-maven'
- //       }
+                maven 'apache-maven'
+        }
         
         stages{
             stage('git repo & clean'){
