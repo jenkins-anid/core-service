@@ -5,12 +5,25 @@ pipeline {
         }
         tools {
                 jdk 'jdk-17.0.4.1'
-                maven 'apache-maven'
+ //               maven 'apache-maven'
         }
+        
         stages{
-            stage('Compile'){
+            stage('git repo & clean'){
             steps{
-                sh 'mvn clean install'
+                sh 'git clone https://github.com/jenkins-anid/core-service.git'
+                sh 'mvn clean -f core-service'
+            }
+            }
+            stage('compile'){
+            steps{
+                sh 'mvn compile -f core-service'
+            }
+            }
+                
+            stage('Install'){
+            steps{
+                sh 'mvn install -f core-service'
             }
             }
         }
