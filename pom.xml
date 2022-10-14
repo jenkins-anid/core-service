@@ -26,6 +26,7 @@
 		<coverage.branch.threshold>0.80</coverage.branch.threshold>
 		<coverage.method.threshold>0.7</coverage.method.threshold>
 		<spring-cloud-sleuth-otel.version>1.0.0-M5</spring-cloud-sleuth-otel.version>
+		<maven.compiler.release>7</maven.compiler.release>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -230,8 +231,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<release>${java.version}</release>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
