@@ -1,7 +1,5 @@
 pipeline {
-        agent {
-            label 'tethys'
-        }
+        agent any
         triggers {
             pollSCM('H/2 * * * *')
         }
