@@ -11,7 +11,7 @@ pipeline {
         stages{
             stage('git repo & clean'){
             steps{
-                sh 'rm -R core-service'
+                sh 'if [ -d core-service ]; then rm -Rf core-service; fi'
                 sh 'git clone https://github.com/jenkins-anid/core-service.git'
                 sh 'mvn -version'
                 sh 'mvn clean -f core-service'
