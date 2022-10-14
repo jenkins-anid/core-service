@@ -13,6 +13,7 @@ pipeline {
             steps{
                 sh 'rm -R core-service'
                 sh 'git clone https://github.com/jenkins-anid/core-service.git'
+                echo $JAVA_HOME
                 sh 'mvn clean -f core-service'
             }
             }
