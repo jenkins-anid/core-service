@@ -10,7 +10,7 @@ spring:
       enabled: false
   datasource:
     database: rspm_core_db
-    hostname: localhost
+    hostname: rspm-core-db
     port: 5432
     username: francis #francis
     password: Anid2022 #Anid2022
