@@ -25,25 +25,7 @@ pipeline {
                 
             stage('Install'){
             steps{
-                sh 'psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'rspm_core_db'" | grep -q 1 | psql -U postgres -c "CREATE DATABASE rspm_core_db"'
-                sh 'DO
-$do$
-BEGIN
-   IF EXISTS (
-      SELECT FROM pg_catalog.pg_roles
-      WHERE  rolname = 'francis') THEN
-
-      RAISE NOTICE 'Role "francis" already exists. Skipping.';
-   ELSE
-      BEGIN   -- nested block
-         CREATE ROLE francis LOGIN PASSWORD 'Anid2022';
-      EXCEPTION
-         WHEN duplicate_object THEN
-            RAISE NOTICE 'Role "francis" was just created by a concurrent transaction. Skipping.';
-      END;
-   END IF;
-END
-$do$;'
+//                sh 'psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'rspm_core_db'" | grep -q 1 | psql -U postgres -c "CREATE DATABASE rspm_core_db"'
                 sh 'mvn install -f core-service'
             }
             }
