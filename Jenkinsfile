@@ -5,7 +5,7 @@ pipeline {
         }
         tools {
  //               jdk 'jdk-17.0.4.1'
-                docker 'docker-tool'
+                dockerTool 'docker-tool'
                 maven 'apache-maven'
         }
         
