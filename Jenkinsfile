@@ -1,15 +1,12 @@
 pipeline {
-        agent {
-                docker 
-                { image 'mven:3.3.3' } 
-        }
+        agent any
         triggers {
             pollSCM('H/2 * * * *')
         }
         tools {
  //               jdk 'jdk-17.0.4.1'
+                docker 'docker-tool'
                 maven 'apache-maven'
-//                Docker 'docker-tool'
         }
         
         stages{
