@@ -37,12 +37,12 @@ pipeline {
                 script {
                          def pomVersion = sh(script: 'mvn -q -Dexec.executable=\'echo\' -Dexec.args=\'${project.version}\' --non-recursive exec:exec', returnStdout: true).trim()
                          def dockerVersion = 'ghcr.io/jenkins-anid/core-service:'+pomVersion+'-latest'
-                         echo '${pomVersion}'
+                         echo "${pomVersion}"
                          //sh 'docker build -t ${dockerVersion} -f docker/Dockerfile .'
                          sh 'ls -l'
                          sh 'docker build -t core-service:0.0.1 -f docker/Dockerfile .'
                          sh 'docker tag core-service:0.0.1 ghcr.io/jenkins-anid/core-service:0.0.1-latest'
-                         sh 'docker login -u jenkins-anid -p ${env.DOCKER_PAT}  ghcr.io'
+                         sh "docker login ghcr.io -u jenkins-anid -p ${env.DOCKER_PAT}"
                          sh 'docker push ghcr.io/jenkins-anid/core-service:0.0.1-latest'
                   }
                }
