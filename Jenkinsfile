@@ -42,7 +42,7 @@ pipeline {
                          sh 'ls -l'
                          sh 'docker build -t core-service:0.0.1 -f docker/Dockerfile .'
                          sh 'docker tag core-service:0.0.1 ghcr.io/jenkins-anid/core-service:0.0.1-latest'
-                         sh 'docker login ghcr.io -u jenkins-anid -p ${env.DOCKER_PAT}'
+                         sh 'docker login -u jenkins-anid -p ${env.DOCKER_PAT}  ghcr.io'
                          sh 'docker push ghcr.io/jenkins-anid/core-service:0.0.1-latest'
                   }
                }
