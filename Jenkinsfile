@@ -28,6 +28,7 @@ pipeline {
             steps{
 //                sh 'psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'rspm_core_db'" | grep -q 1 | psql -U postgres -c "CREATE DATABASE rspm_core_db"'
                 sh 'mvn install -f core-service -DskipTests'
+                sh 'cp core-service/*.jar /opt/rspm/app/core/'
             }
             }
                 
