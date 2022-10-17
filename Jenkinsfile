@@ -30,16 +30,18 @@ pipeline {
             }
             }
         }
-//        stage('Docker Build'){
-//             steps{
-//                 script {
-//                            sh 'docker build -t rspm-core-service:1.0.0 -f ${WORKSPACE}/Dockerfile .'
+        stage('Docker Build'){
+             steps{
+                 script {
+                         def pomVersion = sh(script: 'mvn -q -Dexec.executable=\'echo\' -Dexec.args=\'${project.version}\' --non-recursive exec:exec', returnStdout: true).trim()
+                         def dockerVersion = 'ghcr.io/jenkins-anid/core-service:'+pomVersion+'-latest'
+                         sh 'docker build -t ${dockerVersion} -f docker/Dockerfile .'
 //                            sh 'docker tag rspm-core-service:1.0.0 registry/microservices/rspm-core-service:1.0.0'
-//                            sh 'docker login --username=username --password=password registry'
-////                            sh 'docker push registry/microservices/rspm-core-service:1.0.0'
-//                   }
-//                }
-//        }
+                         sh 'echo ${env.DOCKER_PAT} | docker login ghcr.io -u jenkins-anid --password-stdin'
+                         sh 'docker push ${dockerVersion}'
+                   }
+                }
+        }
 
 //        stage('Kubernetes Deploy'){
 //              steps{
