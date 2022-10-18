@@ -49,17 +49,16 @@ pipeline {
                   }
                }
         }
+                
+             stage('Kubernetes Deploy'){
+              steps{
+                  script{
+                          kubernetesDeploy (configs: 'deploymentservice.yaml', kubeconfigId: 'k8sconfigpwd' )
+                        }
+                   }
+         }
         }
        
-
-//        stage('Kubernetes Deploy'){
-//              steps{
-//                  script{
-//                          sh 'helm upgrade --install rspm-core-service-helm ${WORKSPACE}/rspm-core-service-helm --namespace=test'
-//                        }
-//                   }
-//         }
-
 //         stage('Clean'){
 //            steps{
 //              script{
