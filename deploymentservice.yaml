@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: rspm-core-service-k8s
+spec:
+  selector:
+    matchLabels:
+      app: rspm-core-service-k8S
+  replicas: 1 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: rspm-core-service-k8s
+    spec:
+      containers:
+        - name: rspm-core-service
+          image: ghcr.io/jenkins-anid/core-service:0.0.1-snapshot-latest
+# Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+# The port that the container is running on in the cluster
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rspm-k8ssvc
+spec:
+  selector:
+    app: rspm-core-service-k8s
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  type: NodePort
